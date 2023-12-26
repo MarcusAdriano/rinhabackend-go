@@ -1,0 +1,195 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Web server for \"Rinha de Backend\" Challenge.",
+        "title": "Rinha Backend API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/contagem-pessoas": {
+
+            "get": {
+                "description": "Count people",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pessoas"
+                ],
+                "summary": "Count people",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "/pessoas": {
+            "get": {
+                "description": "Get all people by T",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pessoas"
+                ],
+                "summary": "Find all people by T",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "T",
+                        "name": "t",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.PersonResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new person with the input payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pessoas"
+                ],
+                "summary": "Create a new person",
+                "parameters": [
+                    {
+                        "description": "Pessoa",
+                        "name": "person",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreatePerson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CreatePerson"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/pessoas/{id}": {
+            "get": {
+                "description": "Get a person by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pessoas"
+                ],
+                "summary": "Find a person by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Person ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PersonResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.CreatePerson": {
+            "type": "object",
+            "properties": {
+                "apelido": {
+                    "type": "string"
+                },
+                "nascimento": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "stack": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.PersonResponse": {
+            "type": "object",
+            "properties": {
+                "apelido": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "nascimento": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "stack": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

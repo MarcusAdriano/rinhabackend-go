@@ -1,0 +1,128 @@
+definitions:
+  model.CreatePerson:
+    properties:
+      apelido:
+        type: string
+      nascimento:
+        type: string
+      nome:
+        type: string
+      stack:
+        items:
+          type: string
+        type: array
+    type: object
+  model.PersonResponse:
+    properties:
+      apelido:
+        type: string
+      id:
+        type: string
+      nascimento:
+        type: string
+      nome:
+        type: string
+      stack:
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Web server for "Rinha de Backend" Challenge.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Rinha Backend API
+  version: "1.0"
+paths:
+  /contagem-pessoas:
+    get:
+      consumes:
+      - application/json
+      description: Count people
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: number
+      summary: Count people
+      tags:
+      - pessoas
+  /pessoas:
+    get:
+      consumes:
+      - application/json
+      description: Get all people by T
+      parameters:
+      - description: T
+        in: query
+        name: t
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.PersonResponse'
+            type: array
+      summary: Find all people by T
+      tags:
+      - pessoas
+    post:
+      consumes:
+      - application/json
+      description: Create a new person with the input payload
+      parameters:
+      - description: Pessoa
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreatePerson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CreatePerson'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a new person
+      tags:
+      - pessoas
+  /pessoas/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a person by ID
+      parameters:
+      - description: Person ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PersonResponse'
+      summary: Find a person by ID
+      tags:
+      - pessoas
+swagger: "2.0"
