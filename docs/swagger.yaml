@@ -60,9 +60,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all people by T
+      description: Get all people by term
       parameters:
-      - description: T
+      - description: search term
         in: query
         name: t
         required: true
@@ -76,7 +76,7 @@ paths:
             items:
               $ref: '#/definitions/model.PersonResponse'
             type: array
-      summary: Find all people by T
+      summary: Find all people by term
       tags:
       - pessoas
     post:

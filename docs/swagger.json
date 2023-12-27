@@ -18,7 +18,6 @@
     "host": "localhost:8080",
     "paths": {
         "/contagem-pessoas": {
-
             "get": {
                 "description": "Count people",
                 "consumes": [
@@ -43,7 +42,7 @@
         },
         "/pessoas": {
             "get": {
-                "description": "Get all people by T",
+                "description": "Get all people by term",
                 "consumes": [
                     "application/json"
                 ],
@@ -53,11 +52,11 @@
                 "tags": [
                     "pessoas"
                 ],
-                "summary": "Find all people by T",
+                "summary": "Find all people by term",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "T",
+                        "description": "search term",
                         "name": "t",
                         "in": "query",
                         "required": true

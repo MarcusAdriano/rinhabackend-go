@@ -49,7 +49,7 @@ const docTemplate = `{
         },
         "/pessoas": {
             "get": {
-                "description": "Get all people by T",
+                "description": "Get all people by term",
                 "consumes": [
                     "application/json"
                 ],
@@ -59,11 +59,11 @@ const docTemplate = `{
                 "tags": [
                     "pessoas"
                 ],
-                "summary": "Find all people by T",
+                "summary": "Find all people by term",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "T",
+                        "description": "search term",
                         "name": "t",
                         "in": "query",
                         "required": true

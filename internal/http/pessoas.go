@@ -43,12 +43,12 @@ func FindPersonById(c *fiber.Ctx) error {
 
 // FindAllByT godoc
 //
-//	@Summary		Find all people by T
-//	@Description	Get all people by T
+//	@Summary		Find all people by term
+//	@Description	Get all people by term
 //	@Tags			pessoas
 //	@Accept			json
 //	@Produce		json
-//	@Param			t	query	string	true	"T"
+//	@Param			t	query	string	true	"search term"
 //	@Success		200	{array}	model.PersonResponse
 //	@Router			/pessoas [get]
 func FindAllByT(c *fiber.Ctx) error {
