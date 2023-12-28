@@ -27,7 +27,7 @@ func (q *Queries) CountPessoas(ctx context.Context) (int64, error) {
 const createPessoa = `-- name: CreatePessoa :one
 INSERT INTO pessoas (id, nome, apelido, stack)
 VALUES ($1, $2, $3, $4)
-RETURNING id, nome, apelido, stack
+RETURNING id, nome, apelido, stack, nascimento
 `
 
 type CreatePessoaParams struct {
@@ -50,12 +50,13 @@ func (q *Queries) CreatePessoa(ctx context.Context, arg CreatePessoaParams) (Pes
 		&i.Nome,
 		&i.Apelido,
 		&i.Stack,
+		&i.Nascimento,
 	)
 	return i, err
 }
 
 const getPessoa = `-- name: GetPessoa :one
-SELECT id, nome, apelido, stack
+SELECT id, nome, apelido, stack, nascimento
 FROM pessoas
 WHERE id = $1 LIMIT 1
 `
@@ -68,12 +69,13 @@ func (q *Queries) GetPessoa(ctx context.Context, id uuid.UUID) (Pessoa, error) {
 		&i.Nome,
 		&i.Apelido,
 		&i.Stack,
+		&i.Nascimento,
 	)
 	return i, err
 }
 
 const searchPessoas = `-- name: SearchPessoas :many
-SELECT id, nome, apelido, stack
+SELECT id, nome, apelido, stack, nascimento
 FROM pessoas
 WHERE nome ILIKE $1 OR apelido ILIKE $1 OR stack ILIKE $1
 `
@@ -92,6 +94,7 @@ func (q *Queries) SearchPessoas(ctx context.Context, nome string) ([]Pessoa, err
 			&i.Nome,
 			&i.Apelido,
 			&i.Stack,
+			&i.Nascimento,
 		); err != nil {
 			return nil, err
 		}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
 	"github.com/marcusadriano/rinhabackend-go/internal/repository"
+	"strings"
 	"time"
 )
 
@@ -33,18 +34,37 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 }
 
 func (p pessoaService) FindPersonById(ctx context.Context, id string) (*model.PersonResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	person, err := p.repo.FindPersonById(ctx, id)
+
+	return &model.PersonResponse{
+		ID:         person.ID.String(),
+		Apelido:    person.Apelido,
+		Nome:       person.Nome,
+		Nascimento: person.Nascimento.Time,
+		Stack:      strings.Split(person.Stack.String, ","),
+	}, err
 }
 
 func (p pessoaService) FindAllByTerm(ctx context.Context, search string) ([]*model.PersonResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	people, err := p.repo.FindAllByTerm(ctx, search)
+	if err != nil {
+		return nil, err
+	}
+	var peopleResponse []*model.PersonResponse
+	for _, person := range people {
+		peopleResponse = append(peopleResponse, &model.PersonResponse{
+			ID:         person.ID.String(),
+			Apelido:    person.Apelido,
+			Nome:       person.Nome,
+			Nascimento: person.Nascimento.Time,
+			Stack:      strings.Split(person.Stack.String, ","),
+		})
+	}
+	return peopleResponse, nil
 }
 
 func (p pessoaService) CountPeople(ctx context.Context) (int64, error) {
-	//TODO implement me
-	panic("implement me")
+	return p.repo.CountPeople(ctx)
 }
 
 func NewPessoaService(repo repository.PessoaRepository) PessoaService {

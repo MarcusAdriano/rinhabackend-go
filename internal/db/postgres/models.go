@@ -10,8 +10,9 @@ import (
 )
 
 type Pessoa struct {
-	ID      uuid.UUID
-	Nome    string
-	Apelido string
-	Stack   pgtype.Text
+	ID         uuid.UUID
+	Nome       string
+	Apelido    string
+	Stack      pgtype.Text
+	Nascimento pgtype.Date
 }
