@@ -3,7 +3,18 @@ package http
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
+	"github.com/marcusadriano/rinhabackend-go/internal/service"
 )
+
+type RestHandler struct {
+	srv service.PessoaService
+}
+
+func NewRestHandler(srv service.PessoaService) *RestHandler {
+	return &RestHandler{
+		srv: srv,
+	}
+}
 
 // CreatePerson godoc
 //
@@ -16,14 +27,24 @@ import (
 //	@Success		200		{object}	model.CreatePerson
 //	@Failure		400		{object}	string
 //	@Router			/pessoas [post]
-func CreatePerson(c *fiber.Ctx) error {
+func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 	c.Accepts("application/json")
 
 	request := new(model.CreatePerson)
 	if err := c.BodyParser(request); err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
 
+	p, err := r.srv.CreatePerson(c.Context(), request)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	c.Set("Location", "/pessoas/"+p.ID)
 	return c.SendString("")
 }
 
@@ -37,7 +58,7 @@ func CreatePerson(c *fiber.Ctx) error {
 //	@Param			id	path		int	true	"Person ID"
 //	@Success		200	{object}	model.PersonResponse
 //	@Router			/pessoas/{id} [get]
-func FindPersonById(c *fiber.Ctx) error {
+func (r *RestHandler) FindPersonById(c *fiber.Ctx) error {
 	return c.SendString("[]")
 }
 
@@ -51,7 +72,7 @@ func FindPersonById(c *fiber.Ctx) error {
 //	@Param			t	query	string	true	"search term"
 //	@Success		200	{array}	model.PersonResponse
 //	@Router			/pessoas [get]
-func FindAllByT(c *fiber.Ctx) error {
+func (r *RestHandler) FindAllByT(c *fiber.Ctx) error {
 	//t := c.Query("t")
 	return c.SendString("[]")
 }
@@ -65,6 +86,6 @@ func FindAllByT(c *fiber.Ctx) error {
 //	@Produce		json
 //	@Success		200	{object}	number
 //	@Router			/contagem-pessoas [get]
-func CountPeople(c *fiber.Ctx) error {
+func (r *RestHandler) CountPeople(c *fiber.Ctx) error {
 	return c.SendString("10")
 }

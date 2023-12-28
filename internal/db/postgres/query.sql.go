@@ -8,6 +8,7 @@ package postgres
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -30,7 +31,7 @@ RETURNING id, nome, apelido, stack
 `
 
 type CreatePessoaParams struct {
-	ID      pgtype.UUID
+	ID      uuid.UUID
 	Nome    string
 	Apelido string
 	Stack   pgtype.Text
@@ -59,7 +60,7 @@ FROM pessoas
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetPessoa(ctx context.Context, id pgtype.UUID) (Pessoa, error) {
+func (q *Queries) GetPessoa(ctx context.Context, id uuid.UUID) (Pessoa, error) {
 	row := q.db.QueryRow(ctx, getPessoa, id)
 	var i Pessoa
 	err := row.Scan(

@@ -9,8 +9,9 @@ import (
 )
 
 type RinhaBackendApp struct {
-	app    *fiber.App
-	config WebConfig
+	app     *fiber.App
+	handler *RestHandler
+	config  WebConfig
 }
 
 type WebConfig struct {
@@ -21,16 +22,16 @@ var defaultConfig = WebConfig{
 	Addr: ":8080",
 }
 
-func NewApp(config ...WebConfig) *RinhaBackendApp {
+func NewRestApp(handler *RestHandler, config ...WebConfig) *RinhaBackendApp {
 
-	if len(config) == 0 {
-		return &RinhaBackendApp{
-			config: defaultConfig,
-		}
+	cfg := defaultConfig
+
+	if len(config) > 0 {
+		cfg = config[0]
 	}
 
 	return &RinhaBackendApp{
-		config: config[0],
+		config: cfg,
 	}
 }
 
@@ -62,10 +63,10 @@ func (r *RinhaBackendApp) Run() error {
 
 func (r *RinhaBackendApp) registerHandlers() {
 	app := r.app
-	app.Post("/pessoas", CreatePerson)
-	app.Get("/pessoas/:id", FindPersonById)
-	app.Get("/pessoas", FindAllByT)
-	app.Get("/contagem-pessoas", CountPeople)
+	app.Post("/pessoas", r.handler.CreatePerson)
+	app.Get("/pessoas/:id", r.handler.FindPersonById)
+	app.Get("/pessoas", r.handler.FindAllByT)
+	app.Get("/contagem-pessoas", r.handler.CountPeople)
 }
 
 func (r *RinhaBackendApp) registerSwagger() {
