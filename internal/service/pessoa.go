@@ -32,24 +32,19 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 		return nil, err
 	}
 
-	var stack []string
-	if req.Stack != nil {
-		if len(*req.Stack) > 0 {
-			for _, s := range *req.Stack {
-				if v, ok := s.(string); ok {
-					stack = append(stack, v)
-				} else {
-					return nil, errors.New("invalid stack")
-				}
-			}
-		}
+	stack, err := parseStack(req)
+	if err != nil {
+		return nil, err
 	}
 
 	id := uuid.New()
+
 	var stackText pgtype.Text
-	err = stackText.Scan(strings.Join(stack, ","))
-	if err != nil {
-		return nil, err
+	if stack != nil && len(stack) > 0 {
+		err = stackText.Scan(strings.Join(stack, ","))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	var nascimentoSqlDt pgtype.Date
@@ -80,15 +75,36 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 	}, nil
 }
 
+func parseStack(req *model.CreatePerson) ([]string, error) {
+	var stack []string
+	if req.Stack != nil {
+		if len(*req.Stack) > 0 {
+			for _, s := range *req.Stack {
+				if v, ok := s.(string); ok {
+					stack = append(stack, v)
+				} else {
+					return nil, errors.New("invalid stack")
+				}
+			}
+		}
+	}
+	return stack, nil
+}
+
 func (p pessoaService) FindPersonById(ctx context.Context, id string) (*model.PersonResponse, error) {
 	person, err := p.repo.FindPersonById(ctx, id)
+
+	var stack []string
+	if person.Stack.String != "" {
+		stack = strings.Split(person.Stack.String, ",")
+	}
 
 	return &model.PersonResponse{
 		ID:         person.ID.String(),
 		Apelido:    person.Apelido,
 		Nome:       person.Nome,
 		Nascimento: person.Nascimento.Time.Format(dtFormat),
-		Stack:      strings.Split(person.Stack.String, ","),
+		Stack:      stack,
 	}, err
 }
 
