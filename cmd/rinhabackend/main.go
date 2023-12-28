@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	app := http.NewAppWithDefaultConfig()
+	app := http.NewApp()
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 

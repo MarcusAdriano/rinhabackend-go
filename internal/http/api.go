@@ -10,25 +10,28 @@ import (
 
 type RinhaBackendApp struct {
 	app    *fiber.App
-	config *WebConfig
+	config WebConfig
 }
 
 type WebConfig struct {
 	Addr string
 }
 
-var defaultConfig = &WebConfig{
+var defaultConfig = WebConfig{
 	Addr: ":8080",
 }
 
-func NewApp(config *WebConfig) *RinhaBackendApp {
-	return &RinhaBackendApp{
-		config: config,
-	}
-}
+func NewApp(config ...WebConfig) *RinhaBackendApp {
 
-func NewAppWithDefaultConfig() *RinhaBackendApp {
-	return NewApp(defaultConfig)
+	if len(config) == 0 {
+		return &RinhaBackendApp{
+			config: defaultConfig,
+		}
+	}
+
+	return &RinhaBackendApp{
+		config: config[0],
+	}
 }
 
 //	@title			Rinha Backend API
