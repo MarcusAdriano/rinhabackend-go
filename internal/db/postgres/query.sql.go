@@ -25,16 +25,17 @@ func (q *Queries) CountPessoas(ctx context.Context) (int64, error) {
 }
 
 const createPessoa = `-- name: CreatePessoa :one
-INSERT INTO pessoas (id, nome, apelido, stack)
-VALUES ($1, $2, $3, $4)
+INSERT INTO pessoas (id, nome, apelido, stack, nascimento)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id, nome, apelido, stack, nascimento
 `
 
 type CreatePessoaParams struct {
-	ID      uuid.UUID
-	Nome    string
-	Apelido string
-	Stack   pgtype.Text
+	ID         uuid.UUID
+	Nome       string
+	Apelido    string
+	Stack      pgtype.Text
+	Nascimento pgtype.Date
 }
 
 func (q *Queries) CreatePessoa(ctx context.Context, arg CreatePessoaParams) (Pessoa, error) {
@@ -43,6 +44,7 @@ func (q *Queries) CreatePessoa(ctx context.Context, arg CreatePessoaParams) (Pes
 		arg.Nome,
 		arg.Apelido,
 		arg.Stack,
+		arg.Nascimento,
 	)
 	var i Pessoa
 	err := row.Scan(

@@ -31,7 +31,8 @@ func NewRestApp(handler *RestHandler, config ...WebConfig) *RinhaBackendApp {
 	}
 
 	return &RinhaBackendApp{
-		config: cfg,
+		config:  cfg,
+		handler: handler,
 	}
 }
 

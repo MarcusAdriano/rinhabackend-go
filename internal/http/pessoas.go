@@ -4,6 +4,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
 	"github.com/marcusadriano/rinhabackend-go/internal/service"
+	"github.com/rs/zerolog/log"
+	"strconv"
 )
 
 type RestHandler struct {
@@ -14,6 +16,13 @@ func NewRestHandler(srv service.PessoaService) *RestHandler {
 	return &RestHandler{
 		srv: srv,
 	}
+}
+
+func sendError(ctx *fiber.Ctx, status int, err error) error {
+	log.Error().Msgf("Error: %s", err.Error())
+	return ctx.Status(status).JSON(fiber.Map{
+		"error": err.Error(),
+	})
 }
 
 // CreatePerson godoc
@@ -32,20 +41,16 @@ func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 
 	request := new(model.CreatePerson)
 	if err := c.BodyParser(request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return sendError(c, fiber.StatusBadRequest, err)
 	}
 
 	p, err := r.srv.CreatePerson(c.Context(), request)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return sendError(c, fiber.StatusInternalServerError, err)
 	}
 
 	c.Set("Location", "/pessoas/"+p.ID)
-	return c.SendString("")
+	return nil
 }
 
 // FindPersonById godoc
@@ -59,7 +64,14 @@ func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 //	@Success		200	{object}	model.PersonResponse
 //	@Router			/pessoas/{id} [get]
 func (r *RestHandler) FindPersonById(c *fiber.Ctx) error {
-	return c.SendString("[]")
+
+	id := c.Params("id")
+	person, err := r.srv.FindPersonById(c.Context(), id)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, err)
+	}
+
+	return c.JSON(person)
 }
 
 // FindAllByT godoc
@@ -73,8 +85,14 @@ func (r *RestHandler) FindPersonById(c *fiber.Ctx) error {
 //	@Success		200	{array}	model.PersonResponse
 //	@Router			/pessoas [get]
 func (r *RestHandler) FindAllByT(c *fiber.Ctx) error {
-	//t := c.Query("t")
-	return c.SendString("[]")
+	t := c.Query("t")
+
+	people, err := r.srv.FindAllByTerm(c.Context(), t)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, err)
+	}
+
+	return c.JSON(people)
 }
 
 // CountPeople godoc
@@ -87,5 +105,10 @@ func (r *RestHandler) FindAllByT(c *fiber.Ctx) error {
 //	@Success		200	{object}	number
 //	@Router			/contagem-pessoas [get]
 func (r *RestHandler) CountPeople(c *fiber.Ctx) error {
-	return c.SendString("10")
+	count, err := r.srv.CountPeople(c.Context())
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, err)
+	}
+
+	return c.SendString(strconv.FormatInt(count, 10))
 }

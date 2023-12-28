@@ -4,8 +4,8 @@ FROM pessoas
 WHERE id = $1 LIMIT 1;
 
 -- name: CreatePessoa :one
-INSERT INTO pessoas (id, nome, apelido, stack)
-VALUES ($1, $2, $3, $4)
+INSERT INTO pessoas (id, nome, apelido, stack, nascimento)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
 -- name: CountPessoas :one
