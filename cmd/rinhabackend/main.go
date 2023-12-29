@@ -25,7 +25,10 @@ func main() {
 
 	handler := http.NewRestHandler(srv)
 
-	app := http.NewRestApp(handler)
+	port := os.Getenv("SERVER_PORT")
+	app := http.NewRestApp(handler, http.WebConfig{
+		Addr: ":" + port,
+	})
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 

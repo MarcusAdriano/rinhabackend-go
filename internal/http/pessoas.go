@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
 	"github.com/marcusadriano/rinhabackend-go/internal/service"
@@ -44,12 +45,29 @@ func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 		return sendError(c, fiber.StatusBadRequest, err)
 	}
 
+	// Validations
+	if len(request.Nome) == 0 || len(request.Nome) > 100 {
+		return sendError(c, fiber.StatusUnprocessableEntity, errors.New("nome nao pode ser vazio ou possuir mais de 100 caracteres"))
+	}
+
+	if len(request.Apelido) == 0 || len(request.Apelido) > 32 {
+		return sendError(c, fiber.StatusUnprocessableEntity, errors.New("apelido nao pode ser vazio ou possuir mais de 32 caracteres"))
+	}
+
+	if len(request.Nascimento) != 10 {
+		return sendError(c, fiber.StatusBadRequest, errors.New("nascimento deve estar no formato yyyy-mm-dd"))
+	}
+
 	p, err := r.srv.CreatePerson(c.Context(), request)
 	if err != nil {
-		return sendError(c, fiber.StatusInternalServerError, err)
+		if err.Error() == "invalid stack" {
+			return sendError(c, fiber.StatusBadRequest, err)
+		}
+		return sendError(c, fiber.StatusUnprocessableEntity, err)
 	}
 
 	c.Set("Location", "/pessoas/"+p.ID)
+	c.Status(fiber.StatusCreated)
 	return nil
 }
 
@@ -68,6 +86,10 @@ func (r *RestHandler) FindPersonById(c *fiber.Ctx) error {
 	id := c.Params("id")
 	person, err := r.srv.FindPersonById(c.Context(), id)
 	if err != nil {
+		if err.Error() == "no rows in result set" {
+			c.Status(fiber.StatusNotFound)
+			return nil
+		}
 		return sendError(c, fiber.StatusInternalServerError, err)
 	}
 

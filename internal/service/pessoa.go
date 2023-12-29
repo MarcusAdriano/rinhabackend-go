@@ -80,7 +80,7 @@ func parseStack(req *model.CreatePerson) ([]string, error) {
 	if req.Stack != nil {
 		if len(*req.Stack) > 0 {
 			for _, s := range *req.Stack {
-				if v, ok := s.(string); ok {
+				if v, ok := s.(string); ok && len(v) <= 32 {
 					stack = append(stack, v)
 				} else {
 					return nil, errors.New("invalid stack")

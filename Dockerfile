@@ -8,7 +8,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY Makefile *.go *.json *.yaml ./
+COPY . ./
 
 RUN make build
 
@@ -17,7 +17,7 @@ FROM gcr.io/distroless/base-debian11 AS build-release-stage
 
 WORKDIR /
 
-COPY --from=build-stage /rinhabackend2023 /rinhabackend2023
+COPY --from=build-stage /app/bin/rinhabackend2023 /rinhabackend2023
 
 EXPOSE 8080
 
