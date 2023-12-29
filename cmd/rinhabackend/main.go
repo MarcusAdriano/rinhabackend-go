@@ -2,18 +2,26 @@ package main
 
 import (
 	"context"
+	"os"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/marcusadriano/rinhabackend-go/internal/http"
 	"github.com/marcusadriano/rinhabackend-go/internal/repository"
 	"github.com/marcusadriano/rinhabackend-go/internal/service"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func main() {
 
-	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+	config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Error().Msgf("Error connecting to database: %v", err)
+		panic(err)
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+
 	if err != nil {
 		log.Error().Msgf("Error connecting to database: %v", err)
 		panic(err)
@@ -26,6 +34,10 @@ func main() {
 	handler := http.NewRestHandler(srv)
 
 	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	app := http.NewRestApp(handler, http.WebConfig{
 		Addr: ":" + port,
 	})

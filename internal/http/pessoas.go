@@ -108,6 +108,9 @@ func (r *RestHandler) FindPersonById(c *fiber.Ctx) error {
 //	@Router			/pessoas [get]
 func (r *RestHandler) FindAllByT(c *fiber.Ctx) error {
 	t := c.Query("t")
+	if len(t) == 0 {
+		return sendError(c, fiber.StatusBadRequest, errors.New("termo de busca nao pode ser vazio"))
+	}
 
 	people, err := r.srv.FindAllByTerm(c.Context(), t)
 	if err != nil {

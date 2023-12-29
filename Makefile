@@ -11,3 +11,4 @@ swagger:
 
 docker-build:
 	docker build -t marcusadriano/rinhabackend-go:latest .
+	docker scout cves local://marcusadriano/rinhabackend-go:latest

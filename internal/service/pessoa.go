@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/marcusadriano/rinhabackend-go/internal/db/postgres"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
 	"github.com/marcusadriano/rinhabackend-go/internal/repository"
-	"strings"
-	"time"
 )
 
 const dtFormat = "2006-01-02"
@@ -40,7 +41,7 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 	id := uuid.New()
 
 	var stackText pgtype.Text
-	if stack != nil && len(stack) > 0 {
+	if len(stack) > 0 {
 		err = stackText.Scan(strings.Join(stack, ","))
 		if err != nil {
 			return nil, err
