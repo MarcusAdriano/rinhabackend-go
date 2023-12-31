@@ -2,11 +2,12 @@ package http
 
 import (
 	"errors"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/marcusadriano/rinhabackend-go/internal/model"
 	"github.com/marcusadriano/rinhabackend-go/internal/service"
 	"github.com/rs/zerolog/log"
-	"strconv"
 )
 
 type RestHandler struct {
@@ -58,7 +59,7 @@ func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 		return sendError(c, fiber.StatusBadRequest, errors.New("nascimento deve estar no formato yyyy-mm-dd"))
 	}
 
-	p, err := r.srv.CreatePerson(c.Context(), request)
+	id, err := r.srv.CreatePerson(c.Context(), request)
 	if err != nil {
 		if err.Error() == "invalid stack" {
 			return sendError(c, fiber.StatusBadRequest, err)
@@ -66,7 +67,7 @@ func (r *RestHandler) CreatePerson(c *fiber.Ctx) error {
 		return sendError(c, fiber.StatusUnprocessableEntity, err)
 	}
 
-	c.Set("Location", "/pessoas/"+p.ID)
+	c.Set("Location", "/pessoas/"+id)
 	c.Status(fiber.StatusCreated)
 	return nil
 }

@@ -16,7 +16,7 @@ import (
 const dtFormat = "2006-01-02"
 
 type PessoaService interface {
-	CreatePerson(ctx context.Context, person *model.CreatePerson) (*model.PersonResponse, error)
+	CreatePerson(ctx context.Context, person *model.CreatePerson) (string, error)
 	FindPersonById(ctx context.Context, id string) (*model.PersonResponse, error)
 	FindAllByTerm(ctx context.Context, search string) ([]model.PersonResponse, error)
 	CountPeople(ctx context.Context) (int64, error)
@@ -26,16 +26,16 @@ type pessoaService struct {
 	repo repository.PessoaRepository
 }
 
-func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson) (*model.PersonResponse, error) {
+func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson) (string, error) {
 
 	nascimentoDt, err := time.Parse(dtFormat, req.Nascimento)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	stack, err := parseStack(req)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	id := uuid.New()
@@ -44,14 +44,14 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 	if len(stack) > 0 {
 		err = stackText.Scan(strings.Join(stack, ","))
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 	}
 
 	var nascimentoSqlDt pgtype.Date
 	err = nascimentoSqlDt.Scan(nascimentoDt)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	params := postgres.CreatePessoaParams{
@@ -62,18 +62,12 @@ func (p pessoaService) CreatePerson(ctx context.Context, req *model.CreatePerson
 		Nascimento: nascimentoSqlDt,
 	}
 
-	person, err := p.repo.CreatePerson(ctx, params)
+	err = p.repo.CreatePerson(ctx, params)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &model.PersonResponse{
-		ID:         person.ID.String(),
-		Apelido:    person.Apelido,
-		Nome:       person.Nome,
-		Nascimento: nascimentoDt.Format(dtFormat),
-		Stack:      stack,
-	}, nil
+	return id.String(), nil
 }
 
 func parseStack(req *model.CreatePerson) ([]string, error) {

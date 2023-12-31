@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/marcusadriano/rinhabackend-go/internal/http"
@@ -20,6 +21,8 @@ func main() {
 		panic(err)
 	}
 
+	config.ConnConfig.Config.ConnectTimeout = time.Second * 2
+	
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 
 	if err != nil {

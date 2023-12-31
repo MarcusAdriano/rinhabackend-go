@@ -9,7 +9,7 @@ services:
       - "8080"
     environment:
       - SERVER_PORT=8080
-      - DATABASE_URL=postgres://postgres:mysecretpassword@db:5432/rinhabackend
+      - DATABASE_URL=postgres://postgres:mysecretpassword@db:5432/rinhabackend?pool_max_conns=20&pool_min_conns=10&pool_max_conn_lifetime=60s
     deploy:
       resources:
         limits:
@@ -25,7 +25,7 @@ services:
       - "8080"
     environment:
       - SERVER_PORT=8080
-      - DATABASE_URL=postgres://postgres:mysecretpassword@db:5432/rinhabackend
+      - DATABASE_URL=postgres://postgres:mysecretpassword@db:5432/rinhabackend?pool_max_conns=20&pool_min_conns=10&pool_max_conn_lifetime=60s
     deploy:
       resources:
         limits:
@@ -58,8 +58,12 @@ services:
       - POSTGRES_DB=rinhabackend
     expose:
       - "5432"
+    ports:
+      - 5432:5432
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
     deploy:
       resources:
         limits:

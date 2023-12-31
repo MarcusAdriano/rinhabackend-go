@@ -3,10 +3,9 @@ SELECT *
 FROM pessoas
 WHERE id = $1 LIMIT 1;
 
--- name: CreatePessoa :one
+-- name: CreatePessoa :exec
 INSERT INTO pessoas (id, nome, apelido, stack, nascimento)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING *;
+VALUES ($1, $2, $3, $4, $5);
 
 -- name: CountPessoas :one
 SELECT COUNT(*)
