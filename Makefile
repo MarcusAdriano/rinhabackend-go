@@ -17,4 +17,3 @@ swagger:
 docker-build:
 	docker build -t marcusadriano/rinhabackend-go:latest .
 	docker build -t marcusadriano/cacheserver:latest -f Dockerfile.cache .
-	docker scout cves local://marcusadriano/rinhabackend-go:latest

@@ -72,11 +72,11 @@ func (p *PessoaCachedRepository) CreatePerson(ctx context.Context, person postgr
 	return nil
 }
 
-func (p *PessoaCachedRepository) FindAllByTerm(ctx context.Context, search string) ([]postgres.Pessoa, error) {
+func (p *PessoaCachedRepository) FindAllByTerm(ctx context.Context, search string) ([]postgres.SearchPessoasRow, error) {
 	return p.source.FindAllByTerm(ctx, search)
 }
 
-func (p *PessoaCachedRepository) FindPersonById(ctx context.Context, id string) (postgres.Pessoa, error) {
+func (p *PessoaCachedRepository) FindPersonById(ctx context.Context, id string) (postgres.GetPessoaRow, error) {
 
 	found, err := p.grpc.Get(ctx, &pb.GetRequest{
 		Key: id,
@@ -87,7 +87,7 @@ func (p *PessoaCachedRepository) FindPersonById(ctx context.Context, id string) 
 
 	}
 
-	var person postgres.Pessoa
+	var person postgres.GetPessoaRow
 	err = json.Unmarshal(found.Value, &person)
 	return person, err
 }

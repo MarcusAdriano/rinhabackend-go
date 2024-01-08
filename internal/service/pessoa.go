@@ -109,7 +109,7 @@ func (p pessoaService) FindAllByTerm(ctx context.Context, search string) ([]mode
 		return nil, err
 	}
 
-	if people == nil {
+	if len(people) == 0 {
 		return []model.PersonResponse{}, nil
 	}
 

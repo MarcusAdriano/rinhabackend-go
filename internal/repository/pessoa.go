@@ -10,8 +10,8 @@ import (
 
 type PessoaRepository interface {
 	CreatePerson(ctx context.Context, person postgres.CreatePessoaParams) error
-	FindPersonById(ctx context.Context, id string) (postgres.Pessoa, error)
-	FindAllByTerm(ctx context.Context, search string) ([]postgres.Pessoa, error)
+	FindPersonById(ctx context.Context, id string) (postgres.GetPessoaRow, error)
+	FindAllByTerm(ctx context.Context, search string) ([]postgres.SearchPessoasRow, error)
 	CountPeople(ctx context.Context) (int64, error)
 }
 
@@ -31,16 +31,16 @@ func (p pessoaRepository) CreatePerson(ctx context.Context, params postgres.Crea
 	return q.CreatePessoa(ctx, params)
 }
 
-func (p pessoaRepository) FindPersonById(ctx context.Context, id string) (postgres.Pessoa, error) {
+func (p pessoaRepository) FindPersonById(ctx context.Context, id string) (postgres.GetPessoaRow, error) {
 	q := postgres.New(p.pool)
 
 	return q.GetPessoa(ctx, uuid.MustParse(id))
 }
 
-func (p pessoaRepository) FindAllByTerm(ctx context.Context, search string) ([]postgres.Pessoa, error) {
-	//q := postgres.New(p.pool)
+func (p pessoaRepository) FindAllByTerm(ctx context.Context, search string) ([]postgres.SearchPessoasRow, error) {
+	q := postgres.New(p.pool)
 
-	return []postgres.Pessoa{}, nil // q.SearchPessoas(ctx, search)
+	return q.SearchPessoas(ctx, search)
 }
 
 func (p pessoaRepository) CountPeople(ctx context.Context) (int64, error) {

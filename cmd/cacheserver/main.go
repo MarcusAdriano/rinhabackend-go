@@ -66,5 +66,4 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatal().Msgf("failed to serve: %v", err)
 	}
-
 }

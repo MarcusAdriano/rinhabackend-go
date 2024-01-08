@@ -1,5 +1,5 @@
 -- name: GetPessoa :one
-SELECT *
+SELECT id,nome,apelido,stack,nascimento
 FROM pessoas
 WHERE id = $1 LIMIT 1;
 
@@ -12,6 +12,8 @@ SELECT COUNT(*)
 FROM pessoas;
 
 -- name: SearchPessoas :many
-SELECT *
+SELECT id,nome,apelido,stack,nascimento
 FROM pessoas
-WHERE nome ILIKE $1 OR apelido ILIKE $1 OR stack ILIKE $1;
+WHERE busca @@ plainto_tsquery($1)
+ORDER BY nascimento DESC
+LIMIT 10;

@@ -13,6 +13,12 @@
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
 - Run `docker-compose up -d`
 
+## (Linux Only) How to run with network_mode: host
+
+```bash
+docker compose -f docker-compose-mode-host.yaml up -d
+```
+
 ## How to test
 - Run `go test ./...`
 
