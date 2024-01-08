@@ -22,7 +22,7 @@ func main() {
 	}
 
 	config.ConnConfig.Config.ConnectTimeout = time.Second * 2
-	
+
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 
 	if err != nil {
@@ -32,7 +32,15 @@ func main() {
 	defer pool.Close()
 
 	repo := repository.NewPessoaRepository(pool)
-	srv := service.NewPessoaService(repo)
+
+	cacheConfig := repository.CacheConfig{
+		Addr:          os.Getenv("CACHE_ADDR"),
+		Source:        repo,
+		ClientTimeout: time.Millisecond * 500,
+	}
+
+	cacheRepo := repository.NewPessoaCachedRepository(cacheConfig)
+	srv := service.NewPessoaService(cacheRepo)
 
 	handler := http.NewRestHandler(srv)
 

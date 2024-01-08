@@ -38,9 +38,9 @@ func (p pessoaRepository) FindPersonById(ctx context.Context, id string) (postgr
 }
 
 func (p pessoaRepository) FindAllByTerm(ctx context.Context, search string) ([]postgres.Pessoa, error) {
-	q := postgres.New(p.pool)
+	//q := postgres.New(p.pool)
 
-	return q.SearchPessoas(ctx, search)
+	return []postgres.Pessoa{}, nil // q.SearchPessoas(ctx, search)
 }
 
 func (p pessoaRepository) CountPeople(ctx context.Context) (int64, error) {
