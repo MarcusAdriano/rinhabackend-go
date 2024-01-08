@@ -1,11 +1,24 @@
 ### Rinha Backend - Golang version
 
+## Results
+
+- With cache (simple in memory cache that cannot be used in production)
+![With cache](./results/result-with-cache.png)
+
+- Without cache
+![Without cache](./results/result-without-cache.png)
+
+## Missing
+- Unit testings
+- Integration tests
+
 ## Goals
 - Learn Golang
 - Learn how to use Golang with Docker
 - Learn how to use Golang with Postgres
 - Learn how to use Golang with Swagger
 - Learn Unit tests using Golang
+- Learn gRPC
 
 ## How to run
 - Install [Golang](https://golang.org/doc/install)

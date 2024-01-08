@@ -33,14 +33,14 @@ func main() {
 
 	repo := repository.NewPessoaRepository(pool)
 
-	cacheConfig := repository.CacheConfig{
-		Addr:          os.Getenv("CACHE_ADDR"),
-		Source:        repo,
-		ClientTimeout: time.Millisecond * 500,
-	}
+	// cacheConfig := repository.CacheConfig{
+	// 	Addr:          os.Getenv("CACHE_ADDR"),
+	// 	Source:        repo,
+	// 	ClientTimeout: time.Millisecond * 500,
+	// }
 
-	cacheRepo := repository.NewPessoaCachedRepository(cacheConfig)
-	srv := service.NewPessoaService(cacheRepo)
+	//cacheRepo := repository.NewPessoaCachedRepository(cacheConfig)
+	srv := service.NewPessoaService(repo)
 
 	handler := http.NewRestHandler(srv)
 
