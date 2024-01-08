@@ -5,8 +5,12 @@
 - With cache (simple in memory cache that cannot be used in production)
 ![With cache](./results/result-with-cache.png)
 
+Records in database: 46.480
+
 - Without cache
 ![Without cache](./results/result-without-cache.png)
+
+Records in database: 46.096
 
 ## Missing
 - Unit testings
