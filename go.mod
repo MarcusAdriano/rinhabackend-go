@@ -6,7 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/gofiber/swagger v0.1.14
 	github.com/google/uuid v1.4.0
-	github.com/jackc/pgx/v5 v5.5.1
+	github.com/jackc/pgx/v5 v5.5.4
 	github.com/rs/zerolog v1.31.0
 	github.com/swaggo/swag v1.16.2
 	google.golang.org/grpc v1.60.1
